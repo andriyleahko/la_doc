@@ -1,0 +1,64 @@
+<html>
+    <head>
+        <title>Головна</title>
+        <link href="style.css" rel="stylesheet" media="all">
+    </head>
+    <body>
+        <div>
+            <p>Ролі для користувачів ви можете створювати довільно скільки захочете.</p>
+
+            <p>Ролі по замовчувані являються Anonim - юзер не залогований, User - це простий юзер який залогований в систему і не має ніяких ролей.</p>
+
+            <p>Тепер про використання ролів і правил</p>
+
+            <p>Кожному юзеру ми можемо добавляти ролі </p>
+
+            <div class="kod">
+                $user = new User\User()
+
+                $user->setRoles(['Superadmin','Admin','Manager']);
+            </div>
+
+            <p>також в кожному методі в контролері (роуту або маршрутц) ми можемо дати доступ певній ролі, або заборонити доступ певній ролі</p>
+
+            <p>для цього, в описі роута</p>
+            <div class="kod">
+                'myfirst' => [
+                        'url' => '/my/first',
+                        'controller' => '\Controller\My\First',
+                        'method' => 'index',
+                        'params' => 'a',
+                        'role' => [
+                                'allow' => ['Manager','Admin']
+                        ]
+                ],
+            </div>
+
+            <p>даний роут буде дозволений тільки Manager і Admin, всім решта заборонений</p>
+
+            <p>можна і так </p>
+            <div class="kod">
+                'myfirst' => [
+                        'url' => '/my/first',
+                        'controller' => '\Controller\My\First',
+                        'method' => 'index',
+                        'params' => 'a',
+                        'role' => [
+                                'denied' => ['User','Anonim']
+                        ]
+                ], 
+            </div>
+
+            <p>даний роут буде заборонений
+            'User','Anonim', всім решта дозволений</p>
+
+            <p>маніпуляцією allow і denied, можна дозволити або забороняти маршрути. </p>
+
+            <p>У разі заборони буде генеритися помилка 403 </p>
+            <div class="kod">
+                throw new DenyException('you have not rule for run this route');
+            </div>
+</div>
+    </body>
+</html>
+

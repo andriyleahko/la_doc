@@ -1,0 +1,57 @@
+<html>
+    <head>
+        <title>Головна</title>
+        <link href="style.css" rel="stylesheet" media="all">
+    </head>
+    <body>
+        <div>
+            <p>Про вид і темплейти потрібно знати наступне</p>
+            
+            <p>Вид це компонент</p>
+            <div class="kod">
+                $view = $container->get('view');
+            </div>
+            
+            <p>У контроллерах за вид відповідає </p>
+            <div class="kod">
+                $this->view
+            </div>
+            
+            <p>Папку з шаблонами можна поміняти в config/params/param.php</p>
+            <div class="kod">
+                'templatePath' => 'template/'
+            </div>
+            
+            <p>для того щоб у браузер віддати вид, потрібно написати в коді</p>
+            <div class="kod">
+                return $this->response->setHtmlResponse($this->view->render('modules/profile/register/register'));
+            </div>
+            
+            <p>з такого прикладу у обєкт відповіді відразу запишиться наш вид і повернеться у браузер</p>
+            
+            <p>якщо вам потрібно вид записати у змінну можна так </p>
+            <div class="kod">
+                $tpl = $this->view->render('modules/profile/register/register');
+            </div>
+            
+            <p>для добавлення змінних у вид потрібно написати код </p>
+            <div class="kod">
+                $this->view->assignVars([
+                    'test' => '1',
+                    'test2' => '2',
+                ]);
+            </div>
+            
+            <p>метод assignVars буде накопичувати змінні, якщо його викликати кілька разів</p>
+            
+            <p>метод </p>
+            <div class="kod">
+                $this->view->setTitle('my');
+            </div>
+            
+            <p>встановлює html title сторінки</p>
+            
+            
+        </div>
+    </body>
+</html>

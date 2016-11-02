@@ -1,0 +1,32 @@
+<html>
+    <head>
+        <title>Головна</title>
+        <link href="style.css" rel="stylesheet" media="all">
+    </head>
+    <body>
+        
+        <p>компонент сесії</p>
+        
+        <div class="kod">
+           $container->get('session') 
+        </div>
+        
+        
+        <p>основні методи</p>
+        
+        <p>setData($key, $value) - добавляє змінну $key зі значенням $value в сесію</p>
+        
+        <p>getData($key) - повертає значення змінної  $key з сессіїабо вертає false, коли її не існує</p>
+        
+        <p>getAll() - повертає всі значення сесії</p>
+        
+        <p>genereCSRF() - генерує токен</p>
+        
+        <p>getCSRF() - повертає токен, або null, коли він не згенерований</p>
+        
+        <p>setFlush($key, $value) - записує значення $value змінної $key в флеш память</p>
+        
+        <p>getFlush($key) - повертає значення змінної $key і очищеє її, або null, коли її не існує</p>
+          
+    </body>
+</html>

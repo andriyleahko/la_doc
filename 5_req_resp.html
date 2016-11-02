@@ -1,0 +1,62 @@
+<html>
+    <head>
+        <title>Головна</title>
+        <link href="style.css" rel="stylesheet" media="all">
+    </head>
+    <body>
+        <div>
+            <p>компонент request</p> 
+            <div class="kod">
+                $container->get('request')
+            </div>
+            
+            <p>в контроллері просто</p> 
+            <div class="kod">
+                $this->request
+            </div>
+            <p>цей компонент допомагає витягнути дані запиту клієнта</p> 
+            
+            <p>в ньому існують методи</p> 
+            
+            <p>isPost() - коли запит являється постом</p> 
+            
+            <p>getPost() - витягує весь пост</p> 
+            
+            <p>getPost($key) - витягує змінну з поста з ключем $key, або exception, коли змінна не існує</p> 
+            
+            <p>getGet() - витягує весь гет</p> 
+            
+            <p>getGet($key) - витягує змінну з гету з ключем $key, або exception, коли змінна не існує</p> 
+            
+            <p>isAjax() - коли запит являється ajax</p> 
+            
+            <p>getServerData() - повертає суперглобальний масив $_SERVER</p> 
+            
+            <p>getServerData($key) - витягує змінну з масиву $_SERVER з ключем $key, або exception, коли змінна не існує</p> 
+            
+            <p>компонент response</p> 
+            <div class="kod">
+                $container->get('response')
+            </div>
+            <p>в контроллері просто</p> 
+            <div class="kod">
+                $this->response
+            </div>
+            <p>цей компонент призначений для віддачі результату</p> 
+            
+            <p>основні методи</p> 
+            
+            <p>isResponse() - перевіряє чи є відповідь</p> 
+            
+            <p>setHtmlResponse($html) - записує в компонент відповідь $html, де $html - це стрічка, наприклад вид</p> 
+            
+            <p>setRedirectResponse($uri) - записує у відповідь редірект (перенаправлення), $url - це урл адрес, куда перенаправити клієнта</p> 
+            
+            <p>setJsonResponse($data) - записує у відповідь масив змінних $data, які будуть віддаватися як json</p> 
+            
+            <p>getResponse() - віддає відповідь, відповідно до типу (тут все визначається автоматично). Саме цей метод є в індексному файлі і віддає відповідь клієнту (браузеру)</p> 
+            
+            
+        </div>
+    </body>
+</html>

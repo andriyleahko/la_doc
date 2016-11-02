@@ -1,0 +1,252 @@
+<html>
+    <head>
+        <title>Головна</title>
+        <link href="style.css" rel="stylesheet" media="all">
+    </head>
+    <body>
+        <div>
+            <p>У фреймворці існує система валідації даних отриманих з форми чи будь яким іншим щляхом.</p> 
+
+            <p>Щоб описати функціонал валідації важливо розуміти таке поняття що кожному валідаційному правилу відповідає свій компонент</p> 
+
+            <p>Кожний валідаційний компонент має відповідати інтерфейсу.</p> 
+
+            <p>Таким чином ви можете створювати свої валідаційні правила.</p> 
+
+            <p>Тепер про реалізацію.</p> 
+
+            <p>Для того щоб додати валідаційне правила потрібно відкрити файл config/validate/validate.php</p> 
+
+            <p>і дописати рядок </p> 
+
+            <div class="kod">
+                'custom' => '\Component\MyValidator\Custom'
+            </div>
+
+            <p>відповідно треба створити клас </p> 
+
+            <div class="kod">
+                &lt;?php
+
+                namespace Component\MyValidator;
+
+                use LAFramework\Validation\Classes\IValid;
+
+                /**
+                 * custom class for validation
+                 */
+                class Custom implements IValid {
+
+
+                    /**
+                     * 
+                     * @param mixin $var
+                     * @param string $key
+                     * @param array $option
+                     * @return array
+                     */
+                    public function validate($var, $key, $option = null) {
+                        /**
+                         * our realization
+                         */  
+                        if (!isset($var)) {
+                            return ['success' => false, 'error' => 'error message'];
+                        }
+
+                        return ['success' => true];
+
+                    }
+
+
+
+
+                }
+            </div>
+
+            <p>тут ви бачете що клас має наслідувати інтерфейс LAFramework\Validation\Classes\IValid, в якому описаний метод validate, який потрібно перегрузити</p> 
+
+            <p>у змінні $var буде саме значення змінною яка валідується і для якої потрібно написати правило, $key - це назва змінної, яка перебається наприклад city і тд.</p> 
+
+            <div class="kod">
+                /**
+                 * our realization
+                 */  
+                if (!isset($var)) {
+                    return ['success' => false, 'error' => 'error message'];
+                }
+            </div>
+
+            <p>Даний розділ, як приклад і його вам потрібно переписати, як хочете це і буде ваше правило</p> 
+
+            <p>блок return має бути за такою схемою, якщо 'success' => true - валідація пройшла, якщо false повертається повідомлення 'error' => 'error message'</p> 
+
+            <p>Також існують правила валідації, класи яких вже описані в ядрі</p> 
+
+            <div class="kod">
+                'email' => '\LAFramework\Validation\Classes\Email',
+                'notEmpty' => '\LAFramework\Validation\Classes\NotEmpty',
+                'length' => '\LAFramework\Validation\Classes\Length' 
+            </div>
+
+            <p>можете переглянути дані класи для ясності картини, зверніть увагу на правило length, там передаються ще опції min і max.</p>  
+
+            <p>Опції у своїх правилах можете використовувати аналогічно.</p> 
+
+            <p>Тепер як це все працює в контроллері</p> 
+
+            <div class="kod">
+                $this->validation = $this->container->get('validation');
+
+                $this->validation->setVars([
+                    'name' => 'Andriy',
+                    'email' => 'andriy@leshko.com',
+                    'pass' => '123456',
+                    'city' => '&lt;p&gt;lviv&lt;/p&gt;'
+                ]);
+
+                $this->validation->setRule([
+                    'name' => ['length' => ['min' => 3, 'max' => 20], 'notEmpty'],
+                    'email' => ['length' => ['min' => 3, 'max' => 100], 'notEmpty', 'email'],
+                    'pass' => ['length' => ['min' => 3, 'max' => 20], 'notEmpty'],
+                    'city' => ['custom']
+                ]);
+
+                $this->validation->clearRule([
+                    'city' => ['basic', 'custom'],
+                    'email' => ['basic'],
+                    'pass' => ['basic'],
+                    'name' => ['basic'],
+                ]);
+
+                $this->validation->validate();
+            </div>
+
+            <p>Тут ми бачимо що створюється обєкт validation, дальше методом setVars, передаються змінні, які треба валідувати, </p> 
+
+            <p>потім викликається метод setRule, де ми для кожної змінної прописуємо свої правила. Використані стандартні правила ядра та наше створене користувацьке</p> 
+
+            <p>вкінці запускається метод validate </p> 
+
+            <div class="kod">
+                dump($this->validation->getErrors());
+                dump($this->validation->getVars());
+            </div>
+
+            <p>таким чином ми можемо подивитися чи є помилки, якщо є то результат буде у вигляді масива, а також, отримати наші змінні.</p> 
+
+            <p>Також присутнє валідаційне правило csrf, про нього хочу розказати окремо.</p> 
+
+            <p>Нехай ми хочемо захистити сайт від запитів з інших сайтів.</p> 
+
+            <p>Для цього ми генеруємо csrf токен в контролері і передаємо його у вид</p> 
+
+            <div class="kod">
+                $session->genereCSRF();
+
+                $csrf = $session->getCSRF();
+            </div>
+
+            <p>у виді у створенні форми добавляємо скрите поле</p> 
+            
+            <div class="kod">
+                &lt;input type="hidden" name="_csrf" valur="&lt;?php echo $csrf?&gt;"&gt;
+            </div>
+                
+            <p>потім на перевірці виконуємо валідацію на csrf</p> 
+
+            <div class="kod">
+                $this->validation->setVars([
+                    '_csrf' => $this->request->getPost('_csrf'),
+                ]);
+            </div>
+
+            <div class="kod">
+                $this->validation->setRule([
+                    '_csrf' => ['csrf'],
+                ]);
+
+                $this->validation->validate();
+
+                dump($this->validation->getErrors());
+            </div>
+
+            <p>якщо csrf не правильний, ви получете відповідну помилку</p> 
+
+            <p>Також в цьому блоці хочу розказати про правила очищення зміних, під час їх отримання з форм чи будь з якого іншого місця</p> 
+
+            <p>Ви бачете присутній метод $this->validation->clearRule, в цьому методі слід передати правила за якими будуть очищуватися змінні</p> 
+
+            <p>basic - це правило ядра де виконається trim(strip_tags($var)) зі змінними.</p> 
+
+            <p>Давайте створимо своє правило custom.</p> 
+
+            <p>Відкриєм файл validate/clear.php і добавимо </p> 
+
+            <div class="kod">
+                'custom' => '\Component\MyClearVars\Custom'
+            </div>
+
+            <p>також опишемо клас </p> 
+
+            <div class="kod">
+                &lt;?php
+
+                namespace Component\MyClearVars;
+
+                use LAFramework\Validation\Clears\IClear;
+
+                /**
+                 * custom class for clear vars
+                 */
+                class Custom implements IClear {
+
+
+                    /**
+                     * 
+                     * @param mixin $var
+                     */
+                    public function clear($var) {
+
+                        /**
+                         * our realization
+                         */  
+
+                        return $var;
+
+                    }
+
+
+                }
+            </div>
+
+            <p>класи правил очищення змінних мають наслідувати інтерфейс LAFramework\Validation\Clears\IClear, де має бути перегружений метод clear($var)</p> 
+
+            <p>тут можна написати свою реалізацію. наприклад return $var . 'A';</p> 
+
+            <p>тепер вернемся до контролера і до методу </p> 
+
+            <div class="kod">
+                $this->validation->clearRule([
+                    'city' => ['basic', 'custom'],
+                    'email' => ['basic'],
+                    'pass' => ['basic'],
+                    'name' => ['basic'],
+                ]);
+            </div>
+
+            <p>в даному випадку коли ми викличемо </p> 
+
+            <div class="kod">
+                dump($this->validation->getVars());
+            </div>
+
+            <p>ми будемо мати всі значення змінних з відрізаними хтмл тегами і без пустих пробілів з початку і кінця, а додатково до значення змінної city вкінці юуде велика буква A</p> 
+
+            <p>Додатково, як приклад можете перглянути правило ядра</p> 
+
+            <div class="kod">
+                'basic' => '\LAFramework\Validation\Clears\Basic'
+            </div>
+</div>
+    </body>
+</html>

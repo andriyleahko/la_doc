@@ -1,0 +1,84 @@
+<html>
+    <head>
+        <title>Головна</title>
+        <link href="style.css" rel="stylesheet" media="all">
+    </head>
+    <body>
+        <div>
+            <p>У фреймворці передбачена система кешування. Кешувати можна любі дані. Результат обрахунків, хтмл, обєкти, результат вибірки з бази даних.</p>
+
+            <p>Перед роботою з кешем потрібно настроїти драйвер.</p>
+
+            <p>Існують 3 драйвера, які можна вибрати і настроїти через файл config/params/param.php</p>
+
+            <div class="kod">
+                'cachedriver' => 'fileCache'
+            </div>
+
+            <p>по замовчуванні кеш зберігається у файлові системі</p>
+
+            <p>тут потрібно настроїти параметр</p>
+
+            <div class="kod">
+                'filecachePath' => 'cache'
+            </div>
+            
+            <p>це шлях до папки де будуть зберігатися кеші у вашому проекті </p>
+
+            <p>також можна вибрати драйвера або redisCache, або memCache</p>
+
+            <p>для</p>
+            
+            <div class="kod">
+                'cachedriver' => 'redisCache'
+            </div>
+            
+            <p>потрібно настроїти наступні параметри</p>
+
+            <div class="kod">
+                'redisHost' => '127.0.0.1',
+                'redisPort' => '6379',
+                'redisPass' => 'foobared',
+            </div>
+
+            <p>для</p> 
+            
+            <div class="kod">
+                'cachedriver' => 'memCache'
+            </div>
+            
+            <p>потрібно настроїти наступні параметри</p> 
+
+            <div class="kod">
+                'memcacheHost' => '127.0.0.1',
+                'memcachePort' => '11211',
+            </div>
+
+            <p>Для добавлення даних в кещ потрібно</p>
+
+            <div class="kod">
+                $container->get('cache')->set('key', $data);
+            </div>
+
+            <p>в кеш під ключем кеш добавляться дані $data</p>
+
+            <p>$data має бути масивом, це головне, а дані які будуть в масиві можуть бути які вам потрібно</p>
+
+            <div class="kod">
+                $container->get('cache')->set('key', ['tpl' => '&lt;p&gttets&lt;/p&gt', 'dbres' => $products]);
+            </div>
+
+            <p>для отримання даних з кешу потрібно </p>
+
+            <div class="kod">
+                $data = $container->get('cache')->get('key');
+            </div>
+
+            <p>в даному випадку </p>
+
+            <div class="kod">
+                $data = ['tpl' => '&lt;p&gt;tets&lt;/p&gt', 'dbres' => $products];
+            </div>
+        </div>
+    </body>
+</html>

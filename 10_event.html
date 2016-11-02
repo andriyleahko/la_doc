@@ -1,0 +1,57 @@
+<html>
+    <head>
+        <title>Головна</title>
+        <link href="style.css" rel="stylesheet" media="all">
+    </head>
+    <body>
+        <div>
+            <p>У фреймворці передбачений механізм подій. </p>
+
+            <p>Для створення події і навішення обробника потрібно:</p>
+
+            <p>відкрити файл config/event/events.php і описати подію</p>
+
+            <div class="kod">
+                [
+                    'key' => 'onDoThis',
+                    'component' => 'myComponent',
+                    'method' => 'process'
+                ]
+            </div>
+
+            <p>Після ініціалізації фреймворка, дана подія буде автоматично зареєстрована</p>
+
+            <p>після цього в коді ми можемо викликати </p>
+            
+            <div class="kod">
+                $container->get('dispatcher')->dispatch('onDoThis', $data);
+            </div>
+
+            <p>цим рядком виконається наша подія... тобто буде створений обєкт myComponent і запуститься його метод process, при йьому йому буде передана змінна $data</p>
+
+            <p>dispatch('onDoThis', $data) під час виконання методу dispatch('onDoThis', $data) виконаються всі лістенери які були навішані на цей ключ.</p>
+
+            <p>Тобто ми можем мати кілька лістенерів на одну подію, наприклад </p>
+
+            <div class="kod">
+                [
+                    'key' => 'onDoThis',
+                    'component' => 'myComponent',
+                    'method' => 'process'
+                ],
+                [
+                    'key' => 'onDoThis',
+                    'component' => 'myComponent2',
+                    'method' => 'process2'
+                ]
+            </div>
+
+            <p>під час запуску</p>
+            <div class="kod">
+                $container->get('dispatcher')->dispatch('onDoThis', $data);
+            </div>
+
+            <p>відпрацює і перший і другий лістенер</p>
+</div>
+    </body>
+</html>

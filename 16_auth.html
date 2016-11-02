@@ -1,0 +1,121 @@
+<html>
+    <head>
+        <title>Головна</title>
+        <link href="style.css" rel="stylesheet" media="all">
+    </head>
+    <body>
+        <div>
+            <p>Для авторизації на сайті у фреймворці передбачені такі основні вузли</p>
+
+            <p>1. Контейнер юзерів</p>
+
+            <p>ним може виступати як простий файл так і база даних.</p>
+
+            <p>- Для файла виберемо в config/params/param.php</p>
+            <div class="kod">
+                'authUserAdapter' => 'userDataAdapter',
+            </div>
+
+            <p>Коли вибрали цю опцію ви повинні зайти у файл config/users/user.php і добавити юзерів у список, поміняти файл можна тут config/params/param.php</p>
+            <div class="kod">
+                'userData' => include_once 'config/users/user.php'
+            </div>
+
+            <p>- Якщо вибрали контейнером юзерів базу даних, то у файлі config/params/param.php вкажимо</p>
+
+            <div class="kod">
+                'authUserAdapter' => 'userDbAdapter'
+            </div>
+
+            <p>і впишемо властивіть </p>
+            <div class="kod">
+                'userTable' => 'User\\\User'
+            </div>
+            
+            <p>яка уже вписана по замовчувані.</p>
+
+            <p>Також для цього випадку створимо модель юзера, який уже створений по замовчувані Entity/User/User.php</p>
+
+            <p>Після цього виконаєм команду з консолі</p>
+            <div class="kod">
+                vendor/bin/doctrine orm:schema-tool:update —force
+            </div>
+
+            <p>і у базі даних буде створена таблиця юзерів (звичайне перед тим створемо і настроєм базу даних у фреймворці).</p>
+
+            <p>2. Другий вузол - це шляхи. У ядрі за логування відповідає шлях /login_check, а за шлях де буде форма логування /login</p>
+
+            <p>Форма має бути відправлена методом Post з такими даними username, pass, _csrf останній параметр згенеруйте як описано вище в розділі валідація csrf.</p>
+
+            <p>Форма має бути відправлена на /login_check. Дані шляхи можна поміняти переоприділивши компонент у файлі ../LAFramework/Container/config/firewall.php</p>
+
+            <p>3. Клас обробки результату </p>
+
+            <p>Component/MyAuthHandler.php</p>
+
+            <p>у ньому є 3 методи</p>
+
+            <p>- перший - реалізація успішної авторизації</p>
+            <div class="kod">    
+                public function onSuccess()
+            </div>
+
+            <p>- другий - реалізація помилки авторизації</p>
+            <div class="kod">    
+                public function onFail($message)
+            </div>
+
+            <p>- третій - реалізація під час спроби авторизації, коли ви уже авторизовані</p>
+            <div class="kod">    
+                public function onUserIsAuth()
+            </div>
+
+            <p>клас обробки можна поміняти в настройках config/params/param.php</p>
+            <div class="kod">
+                'authHandler' => 'myAuthHandler'
+            </div>
+            
+            <p>де myAuthHandler - це компонент</p>
+
+            <p>Клас обробки результату має реалізовувати інтерфейс LAFramework\Auth\IAuthHandler</p>
+
+            <p>4. Клас шифрування паролю.</p>
+
+            <p>Під час добавлення нових юзерів вам потрібно буде настроїти шифрування паролю, для цього використовується компонент який вам треба зробити і у config/params/param.php вказати його у властивості</p> 
+            <div class="kod">
+                'passCrypt' => 'myPassCrypt',
+            </div>
+
+            <p>По замовчувані клас уже написаний Component/PassCrypt.php, він реалізовує інтерфейс LAFramework\Auth\IPassCrypt</p>
+
+            <p>тут присутній єдиний метор crypt, який приймає не шифрований пароль (наприклад, який ви ввели у формі) і повертає зашифрований, а сам метод шифрації, можете написати довільний.</p>
+
+            <p>Під час створення юзера і запису його у базу потрібно, використати даний компонент шифрації </p>
+            <div class="kod">
+                $user = new User\User();
+
+                $user->setPass($this->container->get('myPassCrypt')->crypt('1234567'));
+            </div>
+
+            <p>5. Компонент auth</p>
+
+            <p>Компонент, який можна юзати в вашому коді </p>
+            <div class="kod">
+                $container->get('auth')->isAuth();
+            </div>
+            <p>перевідяє чи ви залоговані,</p>
+            <div class="kod">
+                $container->get('auth')->getUser();
+            </div>
+            
+            <p>повертає юзера, залогованого в системі.</p>
+            <div class="kod">
+                $container->get('auth')->logout();
+            </div>
+            
+            <p>розлогінює</p>
+            
+            <p> Авторизація і реєстрація уже реалізована у модулі Profile</p>
+        </div>
+    </body>
+</html>

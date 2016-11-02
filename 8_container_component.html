@@ -1,0 +1,154 @@
+<html>
+    <head>
+        <title>Головна</title>
+        <link href="style.css" rel="stylesheet" media="all">
+    </head>
+    <body>
+        <div>
+
+            <p>Контейнер обєктів можна ініціалізувати в любому місці</p>
+
+            <div class="kod">
+                $container = \LAFramework\Container\Container::init();
+            </div>
+            
+
+            <p>Під час першої ініціалізації контейнера у його властивості запусуються прототипи обєктів - це настройки обєктів, за якими в подальшому будуть створені обєкти - компоненти.</p>
+
+            <p>Після цього ми можемо витягнути з контейнера будь який обєкт фреймворка</p>
+
+            <div class="kod">
+                $view = $container->get('view');
+            </div>
+
+            <p>У зміній $view буде знаходитися обєкт view.</p>
+
+            <p>Під час доругого звернення </p>
+            <div class="kod">
+                $container->get('view');
+            </div>
+            <p>обєкт уже створюватися не буде, а буде повернений уже створений, під час пешого звернення.</p>
+
+            <p>Для перестворення обєкту потрібно передати параметр FALSE</p>
+            
+            <div class="kod">
+                $container->get('view',FALSE);
+            </div>
+
+            <p>Ми можем створювати свої прототипи обєктів, за якими в подальшому будуть створені обєкти. Для цього у файлі config/component.php додаємо</p>
+
+            <div class="kod">
+                'myComponent' => [
+                    'class' => '\Component\MyComponent',
+                ],
+            </div>
+
+            <p>також ми повинні створити клас у папці Component - MyComponent.php</p>
+
+            <div class="kod">
+            &lt;?php
+  
+            namespace Component;
+
+            class MyComponent {
+
+            }
+            </div>
+
+            <p>після цього ми можем звернутися</p>
+
+            <div class="kod">
+                $container->get('myComponent');
+            </div>
+
+            <p>Також у настройках можна передавати властивості прототипу обєкту</p>
+
+            <div class="kod">
+                'myComponent2' => [
+                    'class' => '\Component\MyComponent2',
+                    'params' => [
+                        'view' => [
+                            'type' => 'object',
+                            'value' => 'view'
+                        ],
+                        'a' => [
+                            'value' => 4
+                        ],
+                        'myComponent' => [
+                            'type' => 'object',
+                            'value' => 'myComponent'
+                        ],
+
+                    ]
+                ],
+            </div>
+
+            <p>Тут перш за все хочу сказати, що в ядрі існують ряд прототипів обєктів, які вже описані, такі як: doctrine, view, request.</p>
+
+            <p>Вернемся до нашого прикладу, ми бачим що появився у myComponent2 блок з параметрами. І бачимо 3-и параметри: "view", "a", "myComponent".</p>
+
+            <p>І бачимо що, якщо в параметра існує 'type' => 'object' - це означає що дана властивість також буде обєктом.</p>
+
+            <p>В даному випадку параметр view буде містити в собі обєкт view, а параметр myComponent буде містити обєкт myComponent, який описаний вище.</p>
+
+            <p>Параметр "а" буде містити просте значення 4</p>
+            <div class="kod">
+                $myComponent2 = $container->get('myComponent2');
+            </div>
+
+            <p>Під час першого звернення обєкти view і myComponent будуть автоматично створені і передані в обєкт myComponent2</p>
+
+            <p>Давайте напишемо клас MyComponent2 </p>
+
+            <div class="kod">
+                &lt;?php
+
+                namespace Component;
+
+                use LAFramework\View\Viev;
+                use Component\MyComponent;
+
+                class MyComponent2 {
+
+                        /**
+                        * @type Viev
+                        */
+                        public $view;
+
+                        /**
+                        * @type int
+                        */
+                        protected $a;
+
+                        /**
+                        * @type MyComponent
+                        */
+                        private $myComponent;
+
+                        public function __construct(View $view, $a, MyComponent $myComponent) {
+                                $this->view = $view;
+                                $this->a = $a;
+                                $this->myComponent = $myComponent;
+                        }
+
+
+                }
+            </div>
+
+
+            <p>Тут зверніть увагу я спіцяльно в класі зробив параметри різного типу public, protected, private </p>
+
+            <p>Це зробив для того щоб ви розуміли, що можна використовувати любий з них і на створення обєкту це не впливає.</p>
+
+            <p>Також важливо щоб назва властивостей в настройках прототипа обєкту відповідала назві в класі і в конструкторі. Порядок також має значення</p>
+
+            <p>Після створення обєкту ми можем звернутися з нього до обєкту виду оскільки вид публічна властивість</p>
+            
+            <div class="kod">
+                myComponent2->view->render();
+            </div>
+
+            <p>Аналогічно можна звернутися до інших вдастивостей, якщо вони також будуть публічні.</p>
+</div>
+    </body>
+</html>

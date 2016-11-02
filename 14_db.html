@@ -1,0 +1,152 @@
+<html>
+    <head>
+        <title>Головна</title>
+        <link href="style.css" rel="stylesheet" media="all">
+    </head>
+    <body>
+        <div>
+            <p>Системою керування базами даних у фреймворці виступає doctrine. </p> 
+
+            <p>Для того щоб працювати з нею потрібно у параметрах config/params/param.php, прописати і розкоментувати</p> 
+            <div class="kod">
+                'dbenable' => true, 
+                'dbhost' => 'localhost',
+                'dbuser' => 'root',
+                'dbpass' => 'root',
+                'dbname' => 'la',
+                'dbdriver' => 'pdo_mysql',
+            </div>
+            
+            <p>А також настроїти параметри</p>
+            
+            <div class="kod">
+                'typeEntityMap' => 'annotation',
+                'entityDir' => 'Entity',
+            </div>
+            
+            <p>перший - це тип опису моделей, по замовчуванні annotation</p>
+            
+            <p>ту можуть бути також xml, yml</p>
+            
+            <p>другий - це папка де зберігаються моделі, або їх опис</p>
+
+            <p>Дальше потрібно вручну створити задану базу даних.</p> 
+
+            <p>Дальше вся робота згідно документації Doctrine</p> 
+
+            http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/</p> 
+
+            <p>Файл консоль настройки є в корні сайту cli-config.php</p> 
+
+            <p>Тепер наведу короткий простий приклад для типу опису моделей annotation</p> 
+
+            <p>1. Створимо Entity/User/User.php</p> 
+
+            <div class="kod">
+                &lt;?php
+
+                namespace User;
+
+
+                /**
+                 * example entity
+                 * @Entity @Table(name="users")
+                 **/
+                class User
+                {
+                    /** @Id @Column(type="integer") @GeneratedValue **/
+                    protected $id;
+                    /** @Column(type="string") **/
+                    protected $username;
+                    /** @Column(type="string") **/
+                    protected $pass;
+                    /** @Column(type="string") **/
+                    protected $city;
+                    /** @Column(type="array") **/
+                    protected $roles;
+
+                    public function getId()
+                    {
+                        return $this->id;
+                    }
+
+                    public function getUsername()
+                    {
+                        return $this->username;
+                    }
+
+                    public function setUsername($username)
+                    {
+                        $this->username = $username;
+                    }
+                    public function getPass()
+                    {
+                        return $this->pass;
+                    }
+
+                    public function setPass($pass)
+                    {
+                        $this->pass = $pass;
+                    }
+                    public function getRoles()
+                    {
+                        return $this->roles;
+                    }
+
+                    public function setRoles($roles)
+                    {
+                        $this->roles = $roles;
+                    }
+                    public function getCity()
+                    {
+                        return $this->city;
+                    }
+
+                    public function setCity($city)
+                    {
+                        $this->city = $city;
+                    }
+
+
+                }
+            </div>
+
+            <p>2. Дальше виконаємо команду з консолі у папці проекту</p> 
+
+            <div class="kod">
+                vendor/bin/doctrine orm:schema-tool:update --force
+            </div>
+
+            <p>Таким чином будуть створені таблиці відповідних моделей, у нашому випадку створюється таблиця users</p> 
+
+            <p>3. У контроллері</p> 
+
+                    use User\User;
+
+                    $user = new User();
+                    $user->setUsername('andriy@leshko.com');
+                    $user->setCity('lviv');
+                    $user->setPass($this->container->get('myPassCrypt')->crypt('123456'));
+                    $user->setRoles(['Superadmin']);
+
+                    $this->container->get('doctrine')->getEntityManager()->persist($user);
+                    $this->container->get('doctrine')->getEntityManager()->flush();
+
+            <p>таким чином у таблицю запишеться юзер</p> 
+
+            <p>4. Для одержання даних</p> 
+            <div class="kod">
+                $userRepository = $this->container->get('doctrine')->getEntityManager()->getRepository('User\User');
+                $users = $userRepository->findAll();
+            </div>
+
+            <p>таким чином получимо всіх юзерів з бд</p> 
+
+            <p>В кінці ще раз хочу наголосити </p> 
+
+            <p>Вся робота згідно документації Doctrine
+
+            http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/</p> 
+</div>
+    </body>
+</html>

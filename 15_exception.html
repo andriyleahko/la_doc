@@ -1,0 +1,70 @@
+<html>
+    <head>
+        <title>Головна</title>
+        <link href="style.css" rel="stylesheet" media="all">
+    </head>
+    <body>
+        <div>
+            <p>У фреймфорці існують такі види помилок </p> 
+
+            <p>1. сторінка не знайдена </p> 
+
+            <div class="kod">
+                use LAFramework\Exceptions\NotFoundException;
+
+                throw new NotFoundException($message);
+            </div>
+            <p>у конролері</p> 
+            <div class="kod">
+                $this->notFoundException($message)
+            </div>
+            <p>шаблон сторінки знаходиться тут 
+
+            template/404.php</p> 
+
+            <p>поміняти можна тут config/params/param.php</p>
+
+            <p>2. сторінка заборона доступу</p>
+
+            <div class="kod">
+                use use LAFramework\Exceptions\DenyException;
+
+                throw new DenyException($message);
+            </div>
+
+            <p>у конролері</p>
+
+            <div class="kod">
+                $this->denyException($message)
+            </div>
+            <p>шаблон сторінки знаходиться тут 
+
+            template/403.php</p>
+
+            <p>поміняти можна тут config/params/param.php</p>
+
+            <p>3. Помилка якщо не зареєстрований</p>
+
+            <p>Тут відбувається зразу переадресація на /login</p>
+
+            <div class="kod">
+                use LAFramework\Exceptions\NotAuthException;
+
+                throw new NotAuthException();
+            </div>
+            <p>у контроллері</p>
+
+            $this->notAuthException()
+
+            <p>4. Всі решта помилки</p>
+            <div class="kod">
+                throw new \Exception();
+            </div>
+            <p>шаблон сторінки знаходиться тут 
+
+            template/error.php</p>
+
+            <p>поміняти можна тут config/params/param.php</p>
+        </div>
+    </body>
+</html>
