@@ -120,17 +120,18 @@
             <p>Таким чином будуть створені таблиці відповідних моделей, у нашому випадку створюється таблиця users</p> 
 
             <p>3. У контроллері</p> 
+            <div class="kod">
+                use User\User;
 
-                    use User\User;
+                $user = new User();
+                $user->setUsername('andriy@leshko.com');
+                $user->setCity('lviv');
+                $user->setPass($this->container->get('myPassCrypt')->crypt('123456'));
+                $user->setRoles(['Superadmin']);
 
-                    $user = new User();
-                    $user->setUsername('andriy@leshko.com');
-                    $user->setCity('lviv');
-                    $user->setPass($this->container->get('myPassCrypt')->crypt('123456'));
-                    $user->setRoles(['Superadmin']);
-
-                    $this->container->get('doctrine')->getEntityManager()->persist($user);
-                    $this->container->get('doctrine')->getEntityManager()->flush();
+                $this->container->get('doctrine')->getEntityManager()->persist($user);
+                $this->container->get('doctrine')->getEntityManager()->flush();
+            </div>
 
             <p>таким чином у таблицю запишеться юзер</p> 
 
