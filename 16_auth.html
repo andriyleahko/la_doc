@@ -11,19 +11,7 @@
 
             <p>1. Контейнер юзерів</p>
 
-            <p>ним може виступати як простий файл так і база даних.</p>
-
-            <p>- Для файла виберемо в config/params/param.php</p>
-            <div class="kod">
-                'authUserAdapter' => 'userDataAdapter',
-            </div>
-
-            <p>Коли вибрали цю опцію ви повинні зайти у файл config/users/user.php і добавити юзерів у список, поміняти файл можна тут config/params/param.php</p>
-            <div class="kod">
-                'userData' => include_once 'config/users/user.php'
-            </div>
-
-            <p>- Якщо вибрали контейнером юзерів базу даних, то у файлі config/params/param.php вкажимо</p>
+            <p>- Контейнером юзерів виступає база даних. У файлі config/params/param.php вкажимо</p>
 
             <div class="kod">
                 'authUserAdapter' => 'userDbAdapter'
@@ -35,8 +23,10 @@
             </div>
             
             <p>яка уже вписана по замовчувані.</p>
+            
+            <p>Ви можете також створити свої контейнери юзерів.</p>
 
-            <p>Також для цього випадку створимо модель юзера, який уже створений по замовчувані Entity/User/User.php</p>
+            <p>А для цього випадку створимо модель юзера, який уже створений по замовчувані Entity/User/User.php</p>
 
             <p>Після цього виконаєм команду з консолі</p>
             <div class="kod">
@@ -109,13 +99,24 @@
             <div class="kod">
                 $container->get('auth')->getUser();
             </div>
-            
             <p>повертає юзера, залогованого в системі.</p>
             <div class="kod">
                 $container->get('auth')->logout();
             </div>
-            
             <p>розлогінює</p>
+            
+            
+            <div class="kod">
+                $container->get('auth')->changePassword($user, $pass);
+            </div>
+            
+            <p>для зміни пароля.</p>
+            
+            <div class="kod">
+                $container->get('auth')->resetPassword($token);
+            </div>
+            
+            <p>пошук юзера по токену.</p>
             
             <p> Авторизація і реєстрація уже реалізована у модулі Profile</p>
         </div>
